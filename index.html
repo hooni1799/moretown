@@ -1072,7 +1072,8 @@
       </div>
       <div style="padding:20px">
         <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;background:#000">
-          <video src="moretown_promo.mp4" controls preload="metadata" playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;background:#000"></video>
+          <video id="promoVideo" controls preload="metadata" playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;background:#000"><source src="moretown_promo.mp4" type="video/mp4"></video>
+          <div id="promoError" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:14px;line-height:1.7;padding:20px;">영상을 불러오지 못했어요.<br>index.html과 moretown_promo.mp4 파일이 같은 위치에 있는지 확인해 주세요.</div>
         </div>
         <div style="margin-top:16px;text-align:center">
           <a href="moretown_promo.mp4" download="모어 타운과 비밀의 섬 홍보영상.mp4" style="display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:linear-gradient(135deg,var(--green-bright),var(--green-mid));color:#fff;border-radius:10px;text-decoration:none;font-size:14px;font-weight:600;font-family:'Pretendard','Noto Sans KR',sans-serif" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">⬇️ 영상 다운로드</a>
@@ -1233,27 +1234,38 @@ const FAQ_DATA = [
   {
     cat: 'single',
     q: '싱글 플레이로 수업할 때는 어떻게 진행하나요?',
-    a: `싱글 플레이는 학생들이 <strong>각자 PC에서 혼자</strong> 월드를 열어 활동하는 방식이에요. 매 차시 시작할 때 학생이 <strong>해당 차시의 예제 파일을 개별적으로 불러와</strong> 작업합니다.<br><br>① Minecraft Education 실행 후 로그인<br>② <strong>[플레이] → [가져오기]</strong> 클릭<br>③ 오늘 차시의 예제 파일 선택 (예: <code>퀘스트05(예제).mcworld</code>)<br>④ <strong>[내 세계]</strong>에 추가된 월드를 열어 활동 시작`,
-    tip: `예제 파일은 이전 차시까지의 활동이 반영된 상태예요. 지난 시간에 진도를 다 나가지 못한 학생도 같은 지점에서 함께 시작할 수 있어요.`
+    a: `싱글 플레이는 학생들이 <strong>각자 PC에서 자기 월드</strong>를 만들어 활동하고, <strong>매 수업 끝에 본인 파일을 내보내기로 저장</strong>하며 이어 가는 방식이에요.<br><br><strong>① 첫 수업</strong>: [플레이] → [가져오기]로 <code>모어 타운과 비밀의 섬.mcworld</code> 파일을 불러와 시작해요. (교재 01강)<br><strong>② 수업 마무리</strong>: 학생이 각자 본인 월드를 <strong>내보내기</strong>해서 저장해요.<br><strong>③ 다음 수업</strong>: 지난 시간에 저장한 <strong>본인 파일</strong>을 [가져오기]해서 이어서 활동해요.`,
+    tip: `차시별 예제 파일(<code>퀘스트NN(예제).mcworld</code>)은 결석했거나 본인 파일을 저장하지 못했을 때만 사용해요.`
   },
   {
     cat: 'single',
-    q: '예제 파일은 학생 PC에 어떻게 준비하나요?',
-    a: `수업 전에 교재 자료를 내려받아 학생 PC에 미리 넣어 두세요.<br><br>• 교재 자료 다운로드: 해람북스 홈페이지(<strong>class.edupartner.co.kr</strong>) → 자료실 → SW/특강도서<br>• 교재 자료의 <strong>[1] 예제 파일</strong> 폴더에 퀘스트01~24 예제 파일이 들어 있어요.<br>• 학생 PC 바탕화면이나 공유 폴더에 복사해 두면 학생들이 바로 [가져오기] 할 수 있어요.`,
-    tip: `파일 이름이 비슷해서 헷갈리기 쉬워요. 그날 차시의 예제 파일만 바탕화면에 두거나, 칠판에 오늘의 파일 이름을 적어 주세요.`
+    q: '멀티 플레이와 싱글 플레이는 저장 방법이 어떻게 다른가요?',
+    a: `<table class="ftable"><thead><tr><th>구분</th><th>누가 저장하나요?</th><th>다음 수업에 불러올 파일</th></tr></thead><tbody><tr><td>👥 멀티 플레이</td><td><strong>호스트인 선생님</strong>이 월드를 한 번 내보내기</td><td>선생님이 저장한 월드 파일</td></tr><tr><td>🧍 싱글 플레이</td><td><strong>학생이 각자</strong> 본인 월드를 내보내기</td><td>학생 본인이 저장한 파일</td></tr></tbody></table><br>내보내기 순서: <strong>Esc → [저장하고 종료] → [내 세계]에서 월드 선택 → [관리] → [내보내기]</strong> (교재 5쪽)`,
+    warn: `싱글 플레이는 학생이 저장하지 않으면 그날 활동이 다음 시간에 이어지지 않아요. 수업 마무리 5분 전에 "내보내기" 시간을 꼭 주세요.`
+  },
+  {
+    cat: 'single',
+    q: '학생 파일은 어떻게 이름 짓고 보관하나요?',
+    a: `파일 이름에 <strong>번호·이름·차시</strong>를 넣어 저장하게 하세요.<br>예: <code>3번_김모어_05강.mcworld</code><br><br>학생 PC가 공용 PC라면 반별·학생별 폴더를 정해 두고, 그 폴더에만 저장하도록 안내해 주세요.<br>예: <code>모어타운 / 3학년A반 / 3번_김모어 / 3번_김모어_05강.mcworld</code>`,
+    tip: `같은 이름으로 덮어쓰지 않도록 차시를 파일 이름에 넣으면, 파일이 잘못되었을 때 이전 차시 파일로 돌아갈 수 있어요.`,
+    warn: `공용 PC는 파일이 지워질 수 있어요. USB나 학급 공유 폴더 등에 한 번 더 보관하는 것을 권장해요.`
+  },
+  {
+    cat: 'single',
+    q: '결석했거나 지난 시간 파일을 저장하지 못했어요.',
+    a: `이럴 때 <strong>차시별 예제 파일</strong>을 사용해요. 예제 파일은 이전 차시까지의 활동이 반영된 상태라, 오늘 차시를 바로 시작할 수 있어요.<br><br>① [플레이] → [가져오기]<br>② 오늘 차시의 예제 파일 선택 (예: 05강이면 <code>퀘스트05(예제).mcworld</code>)<br>③ 수업이 끝나면 이 월드를 <strong>본인 파일로 내보내기</strong>해서 다음 시간부터 이어서 사용`,
+    tip: `예제 파일에는 학생이 따로 꾸민 집이나 모은 아이템은 들어 있지 않아요. 이후에는 본인 파일을 저장하며 이어 가도록 안내해 주세요.`
+  },
+  {
+    cat: 'single',
+    q: '수업 파일은 학생 PC에 어떻게 준비하나요?',
+    a: `수업 전에 교재 자료를 내려받아 학생 PC에 넣어 두세요.<br><br>• 교재 자료 다운로드: 해람북스 홈페이지(<strong>class.edupartner.co.kr</strong>) → 자료실 → SW/특강도서<br>• 첫 수업용 <code>모어 타운과 비밀의 섬.mcworld</code> 파일을 학생 PC 바탕화면이나 공유 폴더에 복사해 두세요.<br>• 결석·미저장 학생을 위해 <strong>[1] 예제 파일</strong> 폴더도 함께 준비해 두면 좋아요.`
   },
   {
     cat: 'single',
     q: '싱글 플레이 수업 전에 확인할 것이 있나요?',
-    a: `학생 PC마다 아래 항목을 확인해 주세요.<br><br>• Minecraft Education이 최신 버전인지 (교재 화면 기준 V.26.32)<br>• 학생 계정으로 로그인되는지<br>• <strong>[설정] → [클라우드 저장공간] → [OneDrive에 세계 백업 활성화]</strong> 토글이 꺼져 있는지<br>• 오늘 차시의 예제 파일이 PC에 준비되어 있는지`,
-    warn: `OneDrive 백업 토글이 켜져 있으면 저장할 때 오류 메시지가 나올 수 있어요.`
-  },
-  {
-    cat: 'single',
-    q: '내가 꾸민 섬을 다음 시간에도 이어서 쓰고 싶대요.',
-    a: `예제 파일에는 교재 진도까지만 반영되어 있어서, 학생이 따로 꾸민 집이나 모은 아이템은 들어 있지 않아요.<br><br>자기 월드를 이어서 쓰고 싶다면 수업이 끝날 때 <strong>Esc → [저장하고 종료] → [내 세계]에서 월드 선택 → [관리] → [내보내기]</strong>로 저장하고, 다음 시간에 그 파일을 [가져오기] 하면 돼요.`,
-    tip: `파일 이름에 <strong>번호와 이름</strong>을 넣어 저장하게 하세요. (예: <code>3번_김모어_퀘스트05.mcworld</code>)`,
-    warn: `공용 PC는 파일이 지워질 수 있어요. 개인 파일이 사라지면 그날 차시의 예제 파일로 다시 시작하면 돼요.`
+    a: `학생 PC마다 아래 항목을 확인해 주세요.<br><br>• Minecraft Education이 최신 버전인지 (교재 화면 기준 V.26.32)<br>• 학생 계정으로 로그인되는지<br>• <strong>[설정] → [클라우드 저장공간] → [OneDrive에 세계 백업 활성화]</strong> 토글이 꺼져 있는지<br>• 학생 본인 파일(첫 수업은 <code>모어 타운과 비밀의 섬.mcworld</code>)이 준비되어 있는지`,
+    warn: `OneDrive 백업 토글이 켜져 있으면 내보내기(저장)할 때 오류 메시지가 나올 수 있어요.`
   },
   {
     cat: 'single',
@@ -1264,7 +1276,7 @@ const FAQ_DATA = [
     cat: 'single',
     q: '싱글 플레이에서 학생이 게임 모드를 바꿔요.',
     a: `싱글 플레이에서는 학생이 월드의 주인이라 설정에 따라 게임 모드나 명령어를 바꿀 수 있어요.<br><br>수업 첫 시간에 <strong>"게임 모드와 명령어는 바꾸지 않기"</strong> 규칙을 정해 주세요. 교재 활동은 [서바이벌] 모드에서 코인을 모으고 아이템을 구하는 과정이 핵심이에요.`,
-    tip: `코인이 부족해 진행이 막힌 학생은 선생님이 학생 PC에서 <code>/scoreboard players add @s coin [금액]</code>으로 도와주거나, 다음 차시의 예제 파일을 불러와 이어서 진행하면 돼요.`
+    tip: `코인이 부족해 진행이 막힌 학생은 선생님이 학생 PC에서 <code>/scoreboard players add @s coin [금액]</code>으로 도와줄 수 있어요.`
   },
   {
     cat: 'single',
@@ -1283,13 +1295,13 @@ const FAQ_DATA = [
   {
     cat: 'map',
     q: '수업이 끝난 후 맵을 어떻게 저장하나요?',
-    a: `<strong>Esc → [저장하고 종료] → [내 세계]에서 월드 선택 → [관리] → [내보내기]</strong> 순서로 내 컴퓨터에 저장합니다. (교재 5쪽) 저장 시 파일명에 <strong>날짜와 반 이름</strong>을 꼭 포함하세요.<br>예: <code>20261215_3학년A반</code><br><br>다음 수업에서 불러올 때는 <strong>[플레이] → [가져오기]</strong>를 눌러 해당 파일을 선택하면 됩니다.`,
+    a: `<strong>Esc → [저장하고 종료] → [내 세계]에서 월드 선택 → [관리] → [내보내기]</strong> 순서로 내 컴퓨터에 저장합니다. (교재 5쪽)<br><br>• <strong>멀티 플레이</strong>: 호스트인 선생님이 월드를 <strong>한 번만</strong> 내보내기하면 돼요. 학생들은 따로 저장하지 않아도 돼요.<br>• <strong>싱글 플레이</strong>: 학생이 <strong>각자</strong> 본인 월드를 내보내기해야 해요. (수업 준비 & 세팅 · 싱글 탭 참고) 저장 시 파일명에 <strong>날짜와 반 이름</strong>을 꼭 포함하세요.<br>예: <code>20261215_3학년A반</code><br><br>다음 수업에서 불러올 때는 <strong>[플레이] → [가져오기]</strong>를 눌러 해당 파일을 선택하면 됩니다.`,
     warn: `저장 없이 종료하면 그날 학생들이 한 모든 작업이 사라집니다. 수업 마무리 5분 전에 저장 공지를 습관화하세요.`
   },
   {
     cat: 'map',
     q: '예제 파일과 완성 파일은 어떻게 사용하나요?',
-    a: `교재 자료에는 퀘스트마다 <strong>예제 파일</strong>(<code>퀘스트01(예제).mcworld</code>)과 <strong>완성 파일</strong>(<code>퀘스트01(완성).mcworld</code>)이 있습니다.<br><br>• <strong>예제 파일</strong>: 해당 퀘스트를 시작하기 전 상태 (이전 퀘스트의 완성 상태와 같아요)<br>• <strong>완성 파일</strong>: 해당 퀘스트의 미션을 모두 마친 상태<br><br>싱글 플레이로 처음 시작할 때는 교재 01강처럼 <code>모어 타운과 비밀의 섬.mcworld</code> 파일을 [가져오기]합니다.<br><br>이 교재는 01강부터 고른 <strong>웰컴 선물, 나만의 섬, 텃밭, 적금, 직업, 보유 코인</strong>이 24강까지 계속 이어지는 구조입니다. <strong>멀티 플레이</strong>는 매 수업 저장한 맵을 이어서 불러오는 방식을 권장해요. <strong>싱글 플레이</strong>는 학생이 매 차시 예제 파일을 개별적으로 불러와 작업해요. (수업 준비 & 세팅 · 싱글 탭 참고)`,
+    a: `교재 자료에는 퀘스트마다 <strong>예제 파일</strong>(<code>퀘스트01(예제).mcworld</code>)과 <strong>완성 파일</strong>(<code>퀘스트01(완성).mcworld</code>)이 있습니다.<br><br>• <strong>예제 파일</strong>: 해당 퀘스트를 시작하기 전 상태 (이전 퀘스트의 완성 상태와 같아요)<br>• <strong>완성 파일</strong>: 해당 퀘스트의 미션을 모두 마친 상태<br><br>싱글 플레이로 처음 시작할 때는 교재 01강처럼 <code>모어 타운과 비밀의 섬.mcworld</code> 파일을 [가져오기]합니다.<br><br>이 교재는 01강부터 고른 <strong>웰컴 선물, 나만의 섬, 텃밭, 적금, 직업, 보유 코인</strong>이 24강까지 계속 이어지는 구조입니다. <strong>멀티 플레이</strong>는 매 수업 저장한 맵을 이어서 불러오는 방식을 권장해요. <strong>싱글 플레이</strong>는 학생이 본인 파일을 내보내기로 저장하며 이어 가고, 예제 파일은 결석했거나 저장하지 못했을 때 사용해요. (수업 준비 & 세팅 · 싱글 탭 참고)`,
     tip: `예제 파일은 맵이 사라졌을 때, 진도를 맞춰야 할 때, 수업 전 미리 활동을 확인해 볼 때 사용해 주세요.`,
     warn: `예제 파일에는 학생들이 모은 코인·섬·직업 등 진행 상황이 들어 있지 않아요. 예제 파일로 새로 시작하면 학생들의 진행 상황을 이어갈 수 없어요.`
   },
@@ -1943,6 +1955,9 @@ function switchRecipeTab(id, btn) {
   btn.classList.add('active');
 }
 renderRecipeGrids();
+
+// 홍보영상 오류 안내
+(function(){ const v=document.getElementById('promoVideo'), e=document.getElementById('promoError'); if(!v||!e) return; const show=()=>{ v.style.display='none'; e.style.display='flex'; }; v.addEventListener('error', show, true); const s=v.querySelector('source'); if(s) s.addEventListener('error', show); })();
 // Open first item in each section on load
 document.querySelectorAll('.cat-section').forEach(sec => {
   const first = sec.querySelector('.faq-item');
@@ -2683,7 +2698,6 @@ async function verifySecret(idx) {
     width: 96px; height: 96px; flex-shrink: 0; border-radius: 50%; object-fit: cover;
     border: 3px solid var(--ink); background: #fff; box-shadow: 3px 3px 0 rgba(0,0,0,.18);
   }
-  .mt-avatar-r { transform: scaleX(-1); }
   .mt-bubble { position: relative; flex: 1; padding: 14px 20px 16px !important; font-family: 'Pretendard','Noto Sans KR',sans-serif; }
   .mt-bubble::before, .mt-bubble::after { content: ""; position: absolute; bottom: 18px; width: 0; height: 0; border: 10px solid transparent; }
   .mt-bubble::before { left: -20px; border-right-color: var(--ink); }
